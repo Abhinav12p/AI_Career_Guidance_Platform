@@ -53,7 +53,7 @@ from utils.gemini_client import (
 from utils.serpapi_client import fetch_job_market
 
 st.set_page_config(
-    page_title="AI-Powered Career Guidance Platform",
+    page_title="AI-Powered Career Guidance Platform ",
     page_icon="🚀",
     layout="wide",
 )
