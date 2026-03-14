@@ -1,0 +1,67 @@
+CAREER_PROFILES = {
+    "AI/ML Engineer": {
+        "skills": {
+            "technical": 9,
+            "analytical": 9,
+            "communication": 6,
+            "creative": 6,
+        },
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 5},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Builds machine learning systems, trains models, and deploys AI solutions into products.",
+        "tools": ["Python", "Pandas", "Scikit-learn", "PyTorch", "TensorFlow", "SQL", "Docker"],
+        "certifications": ["Google ML Crash Course", "AWS ML Specialty", "TensorFlow Developer"],
+        "roadmap_hint": "Focus on Python, ML math, model building, deployment, and portfolio projects.",
+    },
+    "Data Scientist": {
+        "skills": {"technical": 8, "analytical": 10, "communication": 7, "creative": 5},
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 5},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Finds patterns in data, builds predictive models, and communicates business insights.",
+        "tools": ["Python", "Pandas", "NumPy", "SQL", "Power BI", "Statistics", "Machine Learning"],
+        "certifications": ["IBM Data Science", "Google Data Analytics", "Microsoft Data Scientist"],
+        "roadmap_hint": "Get strong in statistics, EDA, machine learning, dashboards, and storytelling.",
+    },
+    "Cloud Architect": {
+        "skills": {"technical": 8, "analytical": 8, "communication": 7, "creative": 6},
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 5},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Designs scalable, secure cloud systems for apps, data, and infrastructure.",
+        "tools": ["AWS", "Azure", "GCP", "Linux", "Terraform", "Docker", "Kubernetes"],
+        "certifications": ["AWS Solutions Architect", "Azure Solutions Architect", "Google Cloud Architect"],
+        "roadmap_hint": "Build Linux, networking, cloud, containers, IaC, and architecture design skills.",
+    },
+    "Cybersecurity Analyst": {
+        "skills": {"technical": 8, "analytical": 9, "communication": 6, "creative": 5},
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 5},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Protects systems and networks by monitoring threats, hardening systems, and responding to incidents.",
+        "tools": ["SIEM", "Wireshark", "Linux", "Python", "Networking", "OWASP", "EDR"],
+        "certifications": ["Security+", "CEH", "CISSP"],
+        "roadmap_hint": "Master networking, system security, logs, threat detection, and lab practice.",
+    },
+    "DevOps Engineer": {
+        "skills": {"technical": 9, "analytical": 7, "communication": 6, "creative": 5},
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 4},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Automates software delivery, infrastructure, and monitoring for faster releases.",
+        "tools": ["Linux", "Git", "Docker", "Kubernetes", "CI/CD", "Terraform", "AWS"],
+        "certifications": ["Docker Associate", "CKA", "AWS DevOps Engineer"],
+        "roadmap_hint": "Focus on Linux, scripting, containers, CI/CD, infrastructure as code, and monitoring.",
+    },
+    "Mobile Developer": {
+        "skills": {"technical": 8, "analytical": 7, "communication": 5, "creative": 7},
+        "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 4},
+        "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},
+        "summary": "Builds Android or iOS apps with strong UI and performance.",
+        "tools": ["Flutter", "Kotlin", "Swift", "Firebase", "REST APIs", "UI Design"],
+        "certifications": ["Associate Android Developer", "Flutter Bootcamp"],
+        "roadmap_hint": "Practice app architecture, UI design, APIs, state management, and publishing apps.",
+    },
+}
+
+COMMON_SKILLS = [
+    "Python", "SQL", "AWS", "Azure", "GCP", "Docker", "Kubernetes", "TensorFlow", "PyTorch",
+    "Machine Learning", "Deep Learning", "Statistics", "Linux", "Networking", "Power BI", "Tableau",
+    "Pandas", "Scikit-learn", "Terraform", "CI/CD", "Flutter", "Kotlin", "Swift", "Security",
+]

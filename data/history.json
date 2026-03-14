@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2026-03-14 14:13:03",
+    "type": "recommendation",
+    "payload": {
+      "career": "AI/ML Engineer",
+      "score": 73.5,
+      "fit": "Good Potential",
+      "profile": {
+        "name": "",
+        "education": "High School",
+        "experience": "Beginner",
+        "technical": 6,
+        "analytical": 6,
+        "communication": 6,
+        "creative": 5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-03-14 14:13:00",
+    "type": "recommendation",
+    "payload": {
+      "career": "AI/ML Engineer",
+      "score": 73.5,
+      "fit": "Good Potential",
+      "profile": {
+        "name": "",
+        "education": "High School",
+        "experience": "Beginner",
+        "technical": 6,
+        "analytical": 6,
+        "communication": 6,
+        "creative": 5
+      }
+    }
+  }
+]
