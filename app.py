@@ -1,12 +1,23 @@
 from __future__ import annotations
 
-import json
-from datetime import datetime
-from pathlib import Path
+import os
 from typing import Dict, List
 
 import pandas as pd
 import streamlit as st
+
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+CAREER_IMAGES = {
+    "DevOps Engineer": BASE_DIR / "assets" / "DevOps.jpg",
+    "Mobile Developer": BASE_DIR / "assets" / "Mobile Developer.jpg",
+    "Cybersecurity Analyst": BASE_DIR / "assets" / "Cybersecurity Analyst.JPG",
+    "AI/ML Engineer": BASE_DIR / "assets" / "AI MLEngineer.jpg",
+    "Cloud Architecture": BASE_DIR / "assets" / "Cloud Architecture.jpg",
+    "Data Scientist": BASE_DIR / "assets" / "Data Scientists.jpg",
+}
 
 from utils.recommender import profile_snapshot, recommend_careers
 from utils.storage import add_history, read_history
@@ -66,7 +77,7 @@ CUSTOM_CSS = """
         margin-bottom: 0.8rem;
     }
     .chip {
-        display:inline-block;
+        display: inline-block;
         padding: 0.25rem 0.55rem;
         border-radius: 999px;
         background: rgba(99,102,241,0.18);
@@ -78,6 +89,31 @@ CUSTOM_CSS = """
 """
 
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+
+def resolve_secret(*names: str) -> str:
+    for name in names:
+        try:
+            value = st.secrets.get(name)
+            if value:
+                return str(value)
+        except Exception:
+            pass
+
+        value = os.getenv(name)
+        if value:
+            return value
+
+    return ""
+
+
+def get_gemini_key() -> str:
+    return resolve_secret("GEMINI_API_KEY", "AIzaSyB4cEFQQOPd69H7KiYiUjGRt7YKqFnvxoAy")
+
+
+def get_serpapi_key() -> str:
+    return resolve_secret("SERPAPI_KEY", "e78e00a6c2dbf1e646653742ad77216c4d66d36473dcc4a1d2d1769fcc01d3c3")
+
 
 if "selected_career" not in st.session_state:
     st.session_state.selected_career = None
@@ -125,21 +161,39 @@ def ensure_recommendations() -> List:
     return recs
 
 
-with st.sidebar:
-    st.title("Configuration")
-    st.text_input("Gemini API Key", type="password", key="gemini_api_key")
-    st.text_input("SerpAPI Key", type="password", key="serpapi_key")
-    st.caption("Discover Careers works without API keys. Other tabs use Gemini and SerpAPI.")
+gemini_key = get_gemini_key()
+serpapi_key = get_serpapi_key()
 
-    st.divider()
+with st.sidebar:
+#     st.title("Configuration")
+
+#     st.caption("API keys automatically load from secrets.toml or environment variables.")
+#     if gemini_key:
+#         st.success("Gemini API connected")
+#     else:
+#         st.warning("Gemini API not configured")
+
+#     if serpapi_key:
+#         st.success("SerpAPI connected")
+#     else:
+#         st.warning("SerpAPI not configured")
+
+#     with st.expander("How to make this public without filling keys each time"):
+#         st.code(
+#             'GEMINI_API_KEY = "your_gemini_key_here"\nSERPAPI_KEY = "your_serpapi_key_here"',
+#             language="toml",
+#         )
+
     st.subheader("Your Profile")
     st.text_input("Name", key="name")
     st.text_input("Target Location", value="India", key="location")
+
     st.selectbox(
         "Education Level",
         ["High School", "Diploma", "Bachelor's Degree", "Master's Degree"],
         key="education",
     )
+
     st.selectbox(
         "Experience Level",
         ["Student/No experience", "Beginner", "Intermediate", "Advanced"],
@@ -153,13 +207,14 @@ with st.sidebar:
     st.slider("Communication Skills", 1, 10, 6, key="communication")
     st.slider("Creative Skills", 1, 10, 5, key="creative")
 
-    if st.button("Refresh Recommendations", use_container_width=True):
-        ensure_recommendations()
-        st.success("Recommendations updated.")
 
 profile = get_profile()
 recommendations = ensure_recommendations()
-selected = st.session_state.selected_career or (recommendations[0].career if recommendations else None)
+
+selected = st.session_state.selected_career or (
+    recommendations[0].career if recommendations else None
+)
+
 if st.session_state.selected_career is None and recommendations:
     st.session_state.selected_career = recommendations[0].career
     selected = recommendations[0].career
@@ -167,7 +222,7 @@ if st.session_state.selected_career is None and recommendations:
 selected_rec = next((r for r in recommendations if r.career == selected), None)
 
 st.markdown(
-    f"""
+    """
 <div class="hero-card">
     <h1>🚀 AI-Powered Career Guidance Platform</h1>
     <p class="subtle">Discover careers, analyze live job markets, build a learning roadmap, and chat with an AI career assistant.</p>
@@ -179,14 +234,25 @@ st.markdown(
 
 m1, m2, m3, m4 = st.columns(4)
 with m1:
-    st.markdown(f'<div class="metric-card"><h3>{selected or "-"}</h3><div class="subtle">Selected Career</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="metric-card"><h3>{selected or "-"}</h3><div class="subtle">Selected Career</div></div>',
+        unsafe_allow_html=True,
+    )
 with m2:
-    st.markdown(f'<div class="metric-card"><h3>{recommendations[0].score if recommendations else 0}</h3><div class="subtle">Top Match Score</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="metric-card"><h3>{recommendations[0].score if recommendations else 0}</h3><div class="subtle">Top Match Score</div></div>',
+        unsafe_allow_html=True,
+    )
 with m3:
-    st.markdown(f'<div class="metric-card"><h3>{profile["technical"]}/10</h3><div class="subtle">Technical Strength</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="metric-card"><h3>{profile["technical"]}/10</h3><div class="subtle">Technical Strength</div></div>',
+        unsafe_allow_html=True,
+    )
 with m4:
-    st.markdown(f'<div class="metric-card"><h3>{profile["analytical"]}/10</h3><div class="subtle">Analytical Strength</div></div>', unsafe_allow_html=True)
-
+    st.markdown(
+        f'<div class="metric-card"><h3>{profile["analytical"]}/10</h3><div class="subtle">Analytical Strength</div></div>',
+        unsafe_allow_html=True,
+    )
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     [
@@ -206,17 +272,26 @@ with tab1:
     cols = st.columns(3)
     for idx, rec in enumerate(recommendations[:6]):
         with cols[idx % 3]:
-            st.markdown(f'<div class="career-card">', unsafe_allow_html=True)
+            image_path = CAREER_IMAGES.get(rec.career, "")
+           
+            if image_path and os.path.exists(image_path):
+                st.image(image_path, use_container_width=True)
+            else:
+                st.warning(f"Image not found for {rec.career}")
+            
+            # st.markdown('<div class="career-card">', unsafe_allow_html=True)
             st.markdown(f"### {rec.career}")
             st.progress(int(rec.score))
             st.write(f"Score: {rec.score} | {rec.fit_label}")
             st.write(rec.summary)
             st.write("Top tools:")
             st.write(", ".join(rec.tools[:5]))
+
             if rec.gaps:
                 st.write("Skill gaps:")
                 for gap in rec.gaps:
                     st.write(f"• {gap}")
+
             if st.button(f"Select {rec.career}", key=f"select_{rec.career}"):
                 st.session_state.selected_career = rec.career
                 add_history(
@@ -229,11 +304,13 @@ with tab1:
                     },
                 )
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+
+            # st.markdown("</div>", unsafe_allow_html=True)
 
     if selected_rec:
         st.markdown("### Selected Career Summary")
         st.info(f"Selected career: {selected_rec.career}")
+
         c1, c2 = st.columns(2)
         with c1:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -241,32 +318,36 @@ with tab1:
             st.write(selected_rec.summary)
             st.write("Fit label:", selected_rec.fit_label)
             st.write("Roadmap hint:", selected_rec.roadmap_hint)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
         with c2:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.write("Recommended certifications")
             for cert in selected_rec.certifications:
                 st.write(f"• {cert}")
+
             st.write("Skill gaps to close")
             for gap in selected_rec.gaps or ["Your current profile is already close to this target."]:
                 st.write(f"• {gap}")
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
 with tab2:
     st.subheader("Market Analysis")
     st.caption("Uses SerpAPI to pull live Google Jobs research for the selected career.")
+
     if not selected_rec:
         st.warning("Select a career first in Discover Careers.")
     else:
         st.write(f"Selected career: {selected_rec.career}")
+
         if st.button("Run Live Market Research", key="market_research"):
-            if not st.session_state.get("serpapi_key"):
-                st.error("Add your SerpAPI key in the sidebar.")
+            if not serpapi_key:
+                st.error("SerpAPI key not found in secrets.toml or environment variables.")
             else:
                 with st.spinner("Fetching live job market data..."):
                     try:
                         result = fetch_job_market(
-                            st.session_state["serpapi_key"],
+                            serpapi_key,
                             selected_rec.career,
                             profile.get("location", "India"),
                         )
@@ -281,6 +362,7 @@ with tab2:
                         )
                     except Exception as exc:
                         st.error(f"Market analysis failed: {exc}")
+
         market = st.session_state.market_cache.get(selected_rec.career)
         if market:
             a, b, c = st.columns(3)
@@ -300,6 +382,7 @@ with tab2:
                 st.markdown("#### Top companies")
                 for company, count in market["top_companies"]:
                     st.write(f"• {company} ({count})")
+
             with col2:
                 st.markdown("#### Top locations")
                 for loc, count in market["top_locations"]:
@@ -312,41 +395,48 @@ with tab2:
                     st.write(f"Salary or schedule: {job['salary']}")
                     st.write(job["description"])
         else:
-            st.info("No market analysis yet. Add SerpAPI key and click Run Live Market Research.")
+            st.info("No market analysis yet. Click Run Live Market Research.")
 
 with tab3:
     st.subheader("Learning Roadmap")
     st.caption("Uses Gemini to build a personalized learning roadmap for the selected career.")
+
     if not selected_rec:
         st.warning("Select a career first in Discover Careers.")
     else:
         if st.button("Generate Roadmap", key="roadmap_btn"):
-            if not st.session_state.get("gemini_api_key"):
-                st.error("Add your Gemini API key in the sidebar.")
+            if not gemini_key:
+                st.error("Gemini API key not found in secrets.toml or environment variables.")
             else:
-                prompt = build_roadmap_prompt(selected_rec.career, profile_summary(profile), selected_rec.roadmap_hint)
+                prompt = build_roadmap_prompt(
+                    selected_rec.career,
+                    profile_summary(profile),
+                    selected_rec.roadmap_hint,
+                )
                 with st.spinner("Generating roadmap with Gemini..."):
                     try:
-                        roadmap_text = generate_text(st.session_state["gemini_api_key"], prompt)
+                        roadmap_text = generate_text(gemini_key, prompt)
                         st.session_state.roadmap_cache[selected_rec.career] = roadmap_text
                         add_history("roadmap", {"career": selected_rec.career})
                     except Exception as exc:
                         st.error(f"Roadmap generation failed: {exc}")
+
         roadmap = st.session_state.roadmap_cache.get(selected_rec.career)
         if roadmap:
             st.markdown(roadmap)
         else:
-            st.info("No roadmap generated yet. Add Gemini key and click Generate Roadmap.")
+            st.info("No roadmap generated yet. Click Generate Roadmap.")
 
 with tab4:
     st.subheader("Career Insights")
     st.caption("Uses Gemini to explain role details, tools, certifications, and hiring expectations.")
+
     if not selected_rec:
         st.warning("Select a career first in Discover Careers.")
     else:
         if st.button("Generate Career Insights", key="insights_btn"):
-            if not st.session_state.get("gemini_api_key"):
-                st.error("Add your Gemini API key in the sidebar.")
+            if not gemini_key:
+                st.error("Gemini API key not found in secrets.toml or environment variables.")
             else:
                 prompt = build_insights_prompt(
                     selected_rec.career,
@@ -356,20 +446,22 @@ with tab4:
                 )
                 with st.spinner("Generating insights with Gemini..."):
                     try:
-                        insights_text = generate_text(st.session_state["gemini_api_key"], prompt)
+                        insights_text = generate_text(gemini_key, prompt)
                         st.session_state.insights_cache[selected_rec.career] = insights_text
                         add_history("insights", {"career": selected_rec.career})
                     except Exception as exc:
                         st.error(f"Career insights failed: {exc}")
+
         insights = st.session_state.insights_cache.get(selected_rec.career)
         if insights:
             st.markdown(insights)
         else:
-            st.info("No insights yet. Add Gemini key and click Generate Career Insights.")
+            st.info("No insights yet. Click Generate Career Insights.")
 
 with tab5:
     st.subheader("Career Chat Assistant")
     st.caption("Ask questions about the selected career. Gemini answers in the context of your profile.")
+
     if not selected_rec:
         st.warning("Select a career first in Discover Careers.")
     else:
@@ -380,11 +472,13 @@ with tab5:
         user_question = st.chat_input(f"Ask about {selected_rec.career}")
         if user_question:
             st.session_state.chat_messages.append({"role": "user", "content": user_question})
+
             with st.chat_message("user"):
                 st.write(user_question)
+
             with st.chat_message("assistant"):
-                if not st.session_state.get("gemini_api_key"):
-                    answer = "Add your Gemini API key in the sidebar to use the chat assistant."
+                if not gemini_key:
+                    answer = "Gemini API key not found in secrets.toml or environment variables."
                     st.write(answer)
                 else:
                     prompt = build_chat_prompt(
@@ -395,16 +489,18 @@ with tab5:
                     )
                     with st.spinner("Thinking..."):
                         try:
-                            answer = generate_text(st.session_state["gemini_api_key"], prompt)
+                            answer = generate_text(gemini_key, prompt)
                         except Exception as exc:
                             answer = f"Chat failed: {exc}"
                     st.write(answer)
+
                 st.session_state.chat_messages.append({"role": "assistant", "content": answer})
                 add_history("chat", {"career": selected_rec.career, "question": user_question})
 
 with tab6:
     st.subheader("History")
     history = read_history()
+
     if history:
         for item in history:
             with st.expander(f"{item['timestamp']} | {item['type']}"):
