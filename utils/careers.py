@@ -22,7 +22,7 @@ CAREER_PROFILES = {
         "certifications": ["IBM Data Science", "Google Data Analytics", "Microsoft Data Scientist"],
         "roadmap_hint": "Get strong in statistics, EDA, machine learning, dashboards, and storytelling.",
     },
-    "Cloud Architecture": {
+    "Cloud Architectures": {
         "skills": {"technical": 8, "analytical": 8, "communication": 7, "creative": 6},
         "education_weight": {"High School": 1, "Diploma": 2, "Bachelor's Degree": 4, "Master's Degree": 5},
         "experience_weight": {"Student/No experience": 1, "Beginner": 2, "Intermediate": 4, "Advanced": 5},

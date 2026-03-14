@@ -272,12 +272,27 @@ with tab1:
     cols = st.columns(3)
     for idx, rec in enumerate(recommendations[:6]):
         with cols[idx % 3]:
-            image_path = CAREER_IMAGES.get(rec.career, "")
-           
-            if image_path and os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+            career_name = rec.career.strip()
+
+            if career_name in ["Cloud Architect", "Cloud Architectures"]:
+                career_name = "Cloud Architecture"
+
+            image_path = CAREER_IMAGES.get(career_name, "")
+
+            if image_path and Path(image_path).exists():
+                try:
+                    st.image(str(image_path), use_container_width=True)
+                except Exception as e:
+                    st.warning(f"Image load nahi hui for {career_name}")
+                    st.write(f"Reason: {e}")
             else:
-                st.warning(f"Image not found for {rec.career}")
+                    st.warning(f"Image not found for {career_name}")
+
+                    st.markdown(f"### {career_name}")
+            # if image_path and os.path.exists(image_path):
+                # st.image(image_path, use_container_width=True)
+            # else:
+                # st.warning(f"Image not found for {rec.career}")
             
             # st.markdown('<div class="career-card">', unsafe_allow_html=True)
             st.markdown(f"### {rec.career}")
