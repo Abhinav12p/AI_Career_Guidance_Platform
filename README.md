@@ -1,3 +1,4 @@
+
 # AI-Powered Career Guidance Platform, Streamlit Version
 
 This project is a Streamlit based career guidance platform with six tabs:
@@ -58,3 +59,7 @@ run.bat
 ## Notes
 - API keys are entered in the sidebar for the current session.
 - If API keys are missing, only Discover Careers and History will work.
+=======
+# -AI-Powered-Career-Guidance-Platform
+Discover careers, analyze live job markets, build a learning roadmap, and chat with an AI career assistant.
+
