@@ -8,6 +8,29 @@ import streamlit as st
 
 from pathlib import Path
 
+def resolve_secret(*names: str) -> str:
+    for name in names:
+        try:
+            value = st.secrets.get(name)
+            if value:
+                return str(value)
+        except Exception:
+            pass
+
+        value = os.getenv(name)
+        if value:
+            return value
+
+    return ""
+
+
+def get_gemini_key() -> str:
+    return resolve_secret("GEMINI_API_KEY", "gemini_api_key")
+
+
+def get_serpapi_key() -> str:
+    return resolve_secret("SERPAPI_KEY", "serpapi_key")
+
 BASE_DIR = Path(__file__).resolve().parent
 
 CAREER_IMAGES = {
@@ -30,7 +53,7 @@ from utils.gemini_client import (
 from utils.serpapi_client import fetch_job_market
 
 st.set_page_config(
-    page_title="AI-Powered Career Guidance Platform ",
+    page_title="AI-Powered Career Guidance Platform",
     page_icon="🚀",
     layout="wide",
 )
@@ -89,31 +112,6 @@ CUSTOM_CSS = """
 """
 
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
-
-
-def resolve_secret(*names: str) -> str:
-    for name in names:
-        try:
-            value = st.secrets.get(name)
-            if value:
-                return str(value)
-        except Exception:
-            pass
-
-        value = os.getenv(name)
-        if value:
-            return value
-
-    return ""
-
-
-def get_gemini_key() -> str:
-    return resolve_secret("GEMINI_API_KEY", "AIzaSyB4cEFQQOPd69H7KiYiUjGRt7YKqFnvxoAy")
-
-
-def get_serpapi_key() -> str:
-    return resolve_secret("SERPAPI_KEY", "e78e00a6c2dbf1e646653742ad77216c4d66d36473dcc4a1d2d1769fcc01d3c3")
-
 
 if "selected_career" not in st.session_state:
     st.session_state.selected_career = None
@@ -295,7 +293,8 @@ with tab1:
                 # st.warning(f"Image not found for {rec.career}")
             
             # st.markdown('<div class="career-card">', unsafe_allow_html=True)
-            st.markdown(f"### {rec.career}")
+            st.markdown(f"### {career_name}")
+
             st.progress(int(rec.score))
             st.write(f"Score: {rec.score} | {rec.fit_label}")
             st.write(rec.summary)
@@ -307,7 +306,7 @@ with tab1:
                 for gap in rec.gaps:
                     st.write(f"• {gap}")
 
-            if st.button(f"Select {rec.career}", key=f"select_{rec.career}"):
+            if st.button(f"Select {career_name}", key=f"select_{career_name}"):
                 st.session_state.selected_career = rec.career
                 add_history(
                     "recommendation",
